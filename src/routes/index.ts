@@ -8,11 +8,11 @@ import { RouterConfigDto } from '../dtos/router_config.dto';
 
 export const routes = express.Router();
   
-// Rota do Swagger com autenticação
+// Rota do Swagger 
 routes.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
-// // ROTA PARA EXPORTAR O DOC DO SWAGGER
+// Rota para exportar o json do swagger
 routes.get('/json-to-export', (req, res) => {
     res.json(swaggerDocument);
 });

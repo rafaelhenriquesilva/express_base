@@ -1,0 +1,133 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+      "title": "API",
+      "version": "1.0.0",
+      "termsOfService": "http://localhost:3000/terms/",
+      "description": "Esta é uma API de exemplo com operações CRUD e autenticação."
+  },
+  "servers": [
+      {
+          "url": "http://localhost:3000/",
+          "description": "Servidor Local"
+      },
+      {
+        "url": "https://api.example.com/",
+        "description": "Production server"
+      }
+  ],
+  "paths": {
+      "/items": {
+          "get": {
+              "summary": "Listar todos os itens",
+              "security": [{"BearerAuth": []}],
+              "responses": {
+                  "200": {
+                      "description": "Lista de itens",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {"$ref": "#/components/schemas/Item"}
+                              }
+                          }
+                      }
+                  }
+              }
+          },
+          "post": {
+              "summary": "Criar um novo item",
+              "security": [{"BearerAuth": []}],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {"$ref": "#/components/schemas/Item"}
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {"description": "Item criado com sucesso"}
+              }
+          }
+      },
+      "/items/{itemId}": {
+          "get": {
+              "summary": "Obter detalhes de um item",
+              "security": [{"BearerAuth": []}],
+              "parameters": [{
+                  "name": "itemId",
+                  "in": "path",
+                  "required": true,
+                  "description": "ID do item",
+                  "schema": {"type": "string"}
+              }],
+              "responses": {
+                  "200": {
+                      "description": "Detalhes do item",
+                      "content": {
+                          "application/json": {
+                              "schema": {"$ref": "#/components/schemas/Item"}
+                          }
+                      }
+                  }
+              }
+          },
+          "put": {
+              "summary": "Atualizar um item",
+              "security": [{"BearerAuth": []}],
+              "parameters": [{
+                  "name": "itemId",
+                  "in": "path",
+                  "required": true,
+                  "description": "ID do item",
+                  "schema": {"type": "string"}
+              }],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {"$ref": "#/components/schemas/Item"}
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {"description": "Item atualizado com sucesso"}
+              }
+          },
+          "delete": {
+              "summary": "Deletar um item",
+              "security": [{"BearerAuth": []}],
+              "parameters": [{
+                  "name": "itemId",
+                  "in": "path",
+                  "required": true,
+                  "description": "ID do item",
+                  "schema": {"type": "string"}
+              }],
+              "responses": {
+                  "204": {"description": "Item deletado com sucesso"}
+              }
+          }
+      }
+  },
+  "components": {
+      "schemas": {
+          "Item": {
+              "type": "object",
+              "properties": {
+                  "id": {"type": "string", "description": "ID do item"},
+                  "name": {"type": "string", "description": "Nome do item"},
+                  "description": {"type": "string", "description": "Descrição do item"},
+                  "price": {"type": "number", "description": "Preço do item"}
+              },
+              "required": ["id", "name"]
+          }
+      },
+      "securitySchemes": {
+          "BearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+          }
+      }
+  }
+}

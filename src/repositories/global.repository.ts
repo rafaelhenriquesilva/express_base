@@ -8,7 +8,7 @@ export class GlobalRepository<T extends Model> {
         this.repositoryUtil = new RepositoryUtil<T>(model);
     }
 
-    async getDataByParameters(whereCondition: FindOptions, isReplica?: boolean ): Promise<T[]> {
+    async getDataByParameters(whereCondition: any, isReplica?: boolean ): Promise<T[]> {
         try {
             const results = await this.repositoryUtil.getRecordsByParameters(whereCondition, isReplica);
             return results as T[];
@@ -17,10 +17,14 @@ export class GlobalRepository<T extends Model> {
         }
     }
 
-    async updateData(data: any, id: number, isReplica?: boolean ): Promise<T> {
+    async updateData(data: any, id: number, isReplica?: boolean ) {
         try {
-            const result = await this.repositoryUtil.updateRecord(data, id, isReplica);
-            return result as T;
+            await this.repositoryUtil.updateRecord(data, id, isReplica);
+
+            let resultWithUpdatedData = await this.repositoryUtil.getRecordsByParameters({ id: id }) as T[];
+
+            return resultWithUpdatedData[0] as T;
+                
         } catch (error) {
             throw error;
         }

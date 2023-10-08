@@ -1,12 +1,12 @@
 import { Request, Response, Router } from 'express';
 
-const healthRouter = Router();
+const healthRoute = Router();
 
 export class HealthRoute {
   constructor() {}
   
   public async init() {
-    healthRouter.get('/', this.getHealth);
+    healthRoute.get('/', this.getHealth);
   }
 
   public async getHealth(req: Request, res: Response) {
@@ -14,7 +14,7 @@ export class HealthRoute {
   }
 
   getHealthRoute() {
-    return healthRouter;
+    return healthRoute;
   }
 }
 

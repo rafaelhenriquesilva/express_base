@@ -16,7 +16,7 @@ export class LoginRoute {
     await userAuthenticationService.login(request, response);
   }
 
-  getLoginRoute() {
+  getRoute() {
     return loginRoute;
   }
 }

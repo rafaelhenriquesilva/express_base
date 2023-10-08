@@ -13,7 +13,7 @@ export class HealthRoute {
     res.status(200).json({ status: 'OK' });
   }
 
-  getHealthRoute() {
+  getRoute() {
     return healthRoute;
   }
 }

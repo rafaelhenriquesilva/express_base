@@ -23,7 +23,6 @@ export class JwtUtil {
 
   static async verifyJwtToken(token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      console.info(`token: ${token}`);
       jwt.verify(token, SECRET_KEY_JWT, (err) => {
         if (err) {
           console.error('Error in verifyJwtToken');

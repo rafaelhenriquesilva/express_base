@@ -17,7 +17,7 @@ export class GlobalRepository<T extends Model> {
         }
     }
 
-    async updateData(data: any, id: number, isReplica?: boolean ) {
+    async updateData(data: T, id: number, isReplica?: boolean ) {
         try {
             await this.repositoryUtil.updateRecord(data, id, isReplica);
 

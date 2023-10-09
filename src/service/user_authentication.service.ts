@@ -94,4 +94,48 @@ export class UserAuthenticationService {
         }
 
     }
+
+    async updatePassword(request: Request, response: Response) {
+        const {username, new_password} = request.body;
+        let errors: Array<string> = [];
+
+        let user = await this.globalRepository.getDataByParameters({ username: username }) as UserAuthentication[];
+
+        if (user.length === 0) {
+            errors.push('User not found');
+        }
+
+        if (user.length > 0 && !user[0].is_active) {
+            errors.push('User not active');
+        } 
+        
+        if (errors.length > 0) {
+            return response.status(400).json({
+                message: 'Error',
+                errors: errors
+            });
+        } else {
+            
+            if(new_password.length < 8) {
+                return response.status(400).json({
+                    message: 'Error',
+                    errors: ['Password must be at least 8 characters long']
+                });
+            }
+
+            let encryptPassword = await PasswordUtil.creatHashPassword(new_password);
+
+            let dataToUpdate = {
+                password: encryptPassword
+            } as UserAuthentication;
+
+            let whereCondition = {
+                id: user[0].id
+            } as any;
+
+            let updatedUser = await this.globalRepository.updateData(dataToUpdate, whereCondition) as any;
+
+            response.status(200).json(updatedUser);
+        }
+    }
 }

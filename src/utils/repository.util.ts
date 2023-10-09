@@ -49,17 +49,20 @@ export class RepositoryUtil<T extends Model> {
         }
     }
 
-    async updateRecord(record: any, id: any,  isReplica?: boolean) {
+    async updateRecord(record: any, whereCondition: any,  isReplica?: boolean) {
         try {
             const connection = await this.getConnection(isReplica);
-            const [rowsUpdated, updatedRecords] = await connection.models[this.model.name].update(record, {
-                where: { id },
+            const updatedRecord = await connection.models[this.model.name].update(record, { 
+                where: whereCondition,
                 returning: true,
-            });
-            if (rowsUpdated === 0) {
-                throw new Error(`Record with id ${id} not found.`);
+              });
+            if (updatedRecord[0] === 0) {
+                throw new Error(`Record with id ${whereCondition.id} not found.`);
+
             }
-            return updatedRecords[0];
+            let result = await this.getRecordsByParameters(whereCondition, isReplica);
+           
+            return result;
           } catch (error: any) {
             console.error(`Error to update record: ${error.message}`);
             throw new Error(`Error to update record: ${error.message}`);

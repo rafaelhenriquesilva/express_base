@@ -16,4 +16,11 @@ export class UserAuthenticationHelper {
             errors.push('Invalid password');
         }
     }
+
+    static async  getUser(globalRepository: any, body: any){
+        let user = await globalRepository.getDataByParameters({
+            username: body.username
+        }) as UserAuthentication[];
+        return user;
+    }
 }

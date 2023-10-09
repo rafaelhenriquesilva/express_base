@@ -5,15 +5,16 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 let configDatabase = {
-  dialect: 'mysql', 
-  host: process.env.DB_HOST, 
-  username: process.env.DB_USERNAME, 
-  password: process.env.DB_PASSWORD, 
-  database: process.env.DB_DATABASE, 
+  dialect: 'mysql',
+  charset: 'utf8mb4',
+  host: process.env.DB_HOST,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   define: {
-    timestamps: true, 
-    createdAt: 'created_at', 
-    updatedAt: 'updated_at', 
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   },
   logging: false
 }

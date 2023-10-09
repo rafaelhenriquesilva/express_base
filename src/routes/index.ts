@@ -3,25 +3,24 @@ import { HealthRoute } from './health/health.route';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import { LoginRoute } from './login/login.route';
-
+import { RouterConfigDto } from '../dtos/router_config.dto';
+import { UserRoute } from './user/user.route';
 
 export const routes = express.Router();
   
-// Rota do Swagger com autenticação
+// Rota do Swagger 
 routes.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
-// // ROTA PARA EXPORTAR O DOC DO SWAGGER
+// Rota para exportar o json do swagger
 routes.get('/json-to-export', (req, res) => {
     res.json(swaggerDocument);
 });
 
-const healthRoute = new HealthRoute();
-const loginRoute = new LoginRoute();
-// Chame os método init diretamente, não precisa de uma função anônima
-healthRoute.init();
-loginRoute.init();
+/**
+ * Instanciando as rotas
+ */
+new RouterConfigDto(new HealthRoute(), 'init', '/health', routes);
+new RouterConfigDto(new LoginRoute(), 'init', '/login', routes);
+new RouterConfigDto(new UserRoute(), 'init', '/user', routes);
 
-
-routes.use('/health', healthRoute.getHealthRoute());
-routes.use('/login', loginRoute.getLoginRoute());

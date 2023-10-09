@@ -60,11 +60,15 @@ export class UserAuthenticationService {
                 errors.push('User not found');
             }
 
-            //Compare password
-            let comparePassword = await PasswordUtil.comparePassword(body.password, user[0].password);
+            if (user.length > 0 && !user[0].is_active) {
+                errors.push('User not active');
+            } else if (user.length > 0 && user[0].is_active) {
+                //Compare password
+                let comparePassword = await PasswordUtil.comparePassword(body.password, user[0].password);
 
-            if (!comparePassword) {
-                errors.push('Password not match');
+                if (!comparePassword) {
+                    errors.push('Password not match');
+                }
             }
 
             if (errors.length > 0) {

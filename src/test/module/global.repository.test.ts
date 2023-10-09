@@ -1,6 +1,7 @@
 import { QueryTypes } from "sequelize";
 import TestAccount from "../../entities/TestAccount";
 import { GlobalRepository } from "../../repositories/global.repository";
+import { parse } from "dotenv";
 
 let globalRepositoryWithTestAccountModel = new GlobalRepository(TestAccount);
 describe('GlobalRepository methods', () => {
@@ -46,10 +47,14 @@ describe('GlobalRepository methods', () => {
             age: 12
         } as TestAccount;
 
-        let results = await globalRepositoryWithTestAccountModel.updateData(data, test_account['id']) as TestAccount;
+        let id = test_account['id']
+
+        let dataToUpdate = await globalRepositoryWithTestAccountModel.updateData(data, {
+            'id': id
+        }) as any;
         
-        expect(results).not.toBeNull();
-        expect(results.age).toBe(12);
+        expect(dataToUpdate).not.toBeNull();
+        expect(dataToUpdate[0].age).toBe(12);
     }, 10000);
 
     it('call database and delete data', async () => {

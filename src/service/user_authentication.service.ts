@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { RepositoryUtil } from "../utils/repository.util";
 import UserAuthentication from "../entities/UserAuthentication";
 import { UserAuthenticationHelper } from "../helpers/user_authentication.helper";
+import { JwtUtil } from "../utils/jwt.util";
+import { GlobalRepository } from "../repositories/global.repository";
+
 
 export class UserAuthenticationService {
     constructor() { }
@@ -11,10 +13,8 @@ export class UserAuthenticationService {
             const body = request.body;
             let errors: Array<string> = [];
 
-            const repositoryUtil = new RepositoryUtil(UserAuthentication);
-            let user = await repositoryUtil.getRecordsByParameters({
-                username: body.username
-            }) as UserAuthentication[];
+            const globalRepository = new GlobalRepository(UserAuthentication);
+            let user = await UserAuthenticationHelper.getUser(globalRepository, body);
 
             UserAuthenticationHelper.verifyUserExists(user, errors);
             UserAuthenticationHelper.verifyPassword(user, body, errors);
@@ -25,11 +25,7 @@ export class UserAuthenticationService {
                     errors: errors
                 });
             } else {
-                response.status(200).json({
-                    message: 'User logged',
-                    user: user[0],
-                    token: 'token'
-                });
+                response.status(200).json(user);
             }
         } catch (error: any) {
             response.status(500).json({ error: error.message });

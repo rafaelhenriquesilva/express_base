@@ -13,17 +13,8 @@ export class GlobalRepository<T extends Model> {
         return ErrorUtil.handleErrorsIfContains(this.repositoryUtil.getRecordsByParameters(whereCondition)) as Promise<T[]>;
     }
 
-    async updateData(data: T, id: number, isReplica?: boolean ) {
-        try {
-            await this.repositoryUtil.updateRecord(data, id, isReplica);
-
-            let resultWithUpdatedData = await this.repositoryUtil.getRecordsByParameters({ id: id }) as T[];
-
-            return resultWithUpdatedData[0] as T;
-                
-        } catch (error) {
-            throw error;
-        }
+    async updateData(data: any, whereCondition: any, isReplica?: boolean ): Promise<T> {
+        return ErrorUtil.handleErrorsIfContains(this.repositoryUtil.updateRecord(data, whereCondition, isReplica)) as Promise<T>;
     }
 
     async createData(data: Partial<T>, isReplica?: boolean ): Promise<T> {

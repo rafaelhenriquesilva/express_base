@@ -14,6 +14,7 @@ export class GlobalRepository<T extends Model> {
     }
 
     async updateData(data: any, whereCondition: any, isReplica?: boolean ): Promise<T> {
+        data.updated_at = new Date();
         return ErrorUtil.handleErrorsIfContains(this.repositoryUtil.updateRecord(data, whereCondition, isReplica)) as Promise<T>;
     }
 

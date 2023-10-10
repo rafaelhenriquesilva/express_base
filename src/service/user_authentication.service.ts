@@ -19,11 +19,11 @@ export class UserAuthenticationService {
 
             UserAuthenticationHelper.verifyUserExists(user, errors);
 
-            let encryptPassword = await PasswordUtil.creatHashPassword(body.password);
+            let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
 
-            let data = UserAuthenticationHelper.createUserData(body, encryptPassword);
+            let data = UserAuthenticationHelper.createUserData(body, encryptPassword) as UserAuthentication;
             
-            let newUser = await this.globalRepository.createData(data);
+            let newUser = await this.globalRepository.createData(data) as UserAuthentication;
 
             let callback = async () => response.status(200).json(newUser);
 
@@ -53,16 +53,19 @@ export class UserAuthenticationService {
             await UserAuthenticationHelper.verifyPasswordIsMatch(user, body, errors);
 
             let callback = async () => {
-                let token = await JwtUtil.generateJwtToken(user[0].id);
+                let token = await JwtUtil.generateJwtToken(user[0].id) as string;
 
                 let dataToUpdate = {
                     token: token
                 } as UserAuthentication;
 
                 //Update token user
-                let updateUser = await UserAuthenticationHelper.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate);
+                await UserAuthenticationHelper.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate) as UserAuthentication;
 
-                response.status(200).json(updateUser);
+                response.status(200).json({
+                    message: 'Login realizado com sucesso!',
+                    token: token
+                });
             };
 
             ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
@@ -91,7 +94,7 @@ export class UserAuthenticationService {
         UserAuthenticationHelper.verifyPasswordHaveMinimumLength(new_password, errors);
 
         let callback = async () => {
-            let encryptPassword = await PasswordUtil.creatHashPassword(new_password);
+            let encryptPassword = await PasswordUtil.creatHashPassword(new_password) as string;
 
             let dataToUpdate = {
                 password: encryptPassword
@@ -101,7 +104,7 @@ export class UserAuthenticationService {
                 id: user[0].id
             } as any;
 
-            let updatedUser = await UserAuthenticationHelper.updateData(UserAuthentication, whereCondition, dataToUpdate);
+            let updatedUser = await UserAuthenticationHelper.updateData(UserAuthentication, whereCondition, dataToUpdate) as UserAuthentication;
 
             response.status(200).json(updatedUser);
         }

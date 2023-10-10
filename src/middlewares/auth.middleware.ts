@@ -4,13 +4,14 @@ import { ICustomRequest } from '../interfaces/ICustomRequest';
 
 export const verifyTokenMiddleware = async (req: ICustomRequest, res: Response, next: NextFunction) => {
   const headers = req['headers'];
-  const token = headers['authorization']; 
+  let token = headers['authorization']; 
   if (!token) {
     return res.status(401).json({ message: 'Token not received!' });
   }
 
   try {
     let errors: any[] = [];
+    token = token.replace('Bearer ', '').trim();
     await JwtUtil.verifyJwtToken(token as string);
     req.userId = JwtUtil.getIdFromToken(token as string); 
     if(errors.length > 0) {

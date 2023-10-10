@@ -144,4 +144,7 @@ dist
 # Package Lock
 package-lock.json
 
+# SQLite local
+__base__
+
 # End of https://www.toptal.com/developers/gitignore/api/node

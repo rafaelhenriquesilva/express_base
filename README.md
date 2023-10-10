@@ -37,6 +37,12 @@ Este projeto utiliza o Swagger para documentação da API. Você pode acessar a 
 
 ## Como Executar
 
+Instale o sequelize-cli globalmente:
+
+```bash
+npm install -g sequelize-cli
+```
+
 Para rodar os testes:
 
 ```bash

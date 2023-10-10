@@ -11,8 +11,8 @@ Este é um projeto Node.js que fornece uma estrutura inicial para começar rapid
   - **entities**: Entidades relacionadas ao banco de dados.
   - **helpers**: Classes de apoio para a construção da lógica dos serviços.
   - **interfaces**
-    - **middlewares**: Middlewares personalizados.
-    - **queries**: Consultas personalizadas, se necessário, devido às limitações do ORM.
+  - **middlewares**: Middlewares personalizados.
+  - **queries**: Consultas personalizadas, se necessário, devido às limitações do ORM.
   - **repositories**: Classes que interagem com as entidades e o banco de dados.
   - **test**: Classes de teste do projeto.
   - **utils**: Classes utilitárias.

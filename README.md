@@ -43,6 +43,12 @@ Instale o sequelize-cli globalmente:
 npm install -g sequelize-cli
 ```
 
+Intale as dependências:
+
+```bash
+npm install
+```
+
 Para rodar os testes:
 
 ```bash

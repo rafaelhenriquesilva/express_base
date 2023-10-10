@@ -1,8 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/sequelize'; // Importe a instância do Sequelize
 
-// Create model TestAccount with id, name, age
-
 class TestAccount extends Model {
   public id!: number;
   public name!: string;
@@ -14,7 +12,7 @@ class TestAccount extends Model {
 TestAccount.init(
   {
     id: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
     },

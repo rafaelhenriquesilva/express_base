@@ -1,26 +1,73 @@
 import UserAuthentication from "../entities/UserAuthentication";
-
+import { GlobalRepository } from "../repositories/global.repository";
+import { LoggerUtil } from "../utils/logger.util";
+import { PasswordUtil } from "../utils/password.util";
 
 export class UserAuthenticationHelper {
+    
 
-    static verifyUserExists(user: UserAuthentication[], errors: Array<string>) {
+    static verifyUserNotExists(user: UserAuthentication[], errors: Array<string>) {
         if(user.length == 0){
+            LoggerUtil.logError(`User not found: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserNotExists');
             errors.push('User not found');
+        } 
+    }
+
+    static async verifyUserExists(user: UserAuthentication[], errors: Array<string>) {
+        if(user.length > 0){
+            LoggerUtil.logError(`User already exists: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserExists');
+            errors.push('User already exists');
         }
     }
 
-    static verifyPassword(user: UserAuthentication[], body: any, errors: Array<string>) {
-        if(user == null || user == undefined || user.length == 0){
-            errors.push('Invalid password');
-        } else if(user[0].password != body.password){
-            errors.push('Invalid password');
+    static async verifyPasswordIsMatch(user: UserAuthentication[], body: any, errors: Array<string>) {
+        if (user.length > 0 && user[0].is_active) {
+            //Compare password
+            let comparePassword = await PasswordUtil.comparePassword(body.password, user[0].password);
+
+            if (!comparePassword) {
+                LoggerUtil.logError(`Password not match: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyPasswordIsMatch');
+                errors.push('Password not match');
+            }
         }
     }
 
-    static async  getUser(globalRepository: any, body: any){
-        let user = await globalRepository.getDataByParameters({
-            username: body.username
-        }) as UserAuthentication[];
-        return user;
+    static async  getDataWhereCondition(model: any, whereCondition: any){
+        let globalRepository = new GlobalRepository(model);
+        let data = await globalRepository.getDataByParameters(
+            whereCondition
+        );
+        return data;
+    }
+
+    static async verifyUserIsActive(user: UserAuthentication[], errors: Array<string>) {
+        if(user.length > 0 && !user[0].is_active){
+            LoggerUtil.logError(`User not active: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserIsActive');
+            errors.push('User not active');
+        }
+    }
+
+    static async updateData(model: any, whereCondition: any, data: any){
+        let globalRepository = new GlobalRepository(model);
+        let dataUpdated = await globalRepository.updateData(data, whereCondition);
+        return dataUpdated;
+    }
+
+    static async verifyPasswordHaveMinimumLength(password: string, errors: Array<string>) {
+        if (password.length < 8) {
+            LoggerUtil.logError(`Password must have minimum length of 8 characters: ${JSON.stringify(password)}` , 'helpers/user_authentication.helper.ts', 'verifyPasswordHaveMinimumLength');
+            errors.push('Password must have minimum length of 8 characters');
+        }
+    }
+
+    static createUserData(body: any, encryptPassword: string){
+        let data = {
+            username: body.username,
+            password: encryptPassword,
+            created_at: new Date(),
+            updated_at: new Date(),
+            is_active: true
+        } as UserAuthentication;
+        return data;
     }
 }

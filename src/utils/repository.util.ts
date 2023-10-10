@@ -2,6 +2,7 @@
 
 import { Model, Sequelize, QueryTypes } from 'sequelize';
 import sequelize from '../config/sequelize';
+import { LoggerUtil } from './logger.util';
 
 
 export class RepositoryUtil<T extends Model> {
@@ -22,7 +23,7 @@ export class RepositoryUtil<T extends Model> {
             // }
             return connection;
         } catch (error: any) {
-            console.error(`Error to connect to database: ${error.message}`);
+            LoggerUtil.logError(`Error to connect to database: ${error.message}`, 'utils/repository.util.ts', 'getConnection');
             throw new Error(`Error to connect to database: ${error.message}`);
         }
     }
@@ -33,7 +34,7 @@ export class RepositoryUtil<T extends Model> {
             const records = await connection.query(query, { type: typeQuery });
             return records;
         } catch (error: any) {
-            console.error(`Error to execute query: ${error.message}`);
+            LoggerUtil.logError(`Error to execute query: ${error.message}`, 'utils/repository.util.ts', 'executeQuery');
             throw new Error(`Error to execute query: ${error.message}`);
         }
     }
@@ -44,7 +45,7 @@ export class RepositoryUtil<T extends Model> {
             const records = connection.models[this.model.name].findAll({ where: whereCondition });
             return records;
         } catch (error: any) {
-            console.error(`Error to get records: ${error.message}`);
+            LoggerUtil.logError(`Error to get records: ${error.message}`, 'utils/repository.util.ts', 'getRecordsByParameters');
             throw new Error(`Error to get records: ${error.message}`);
         }
     }
@@ -57,6 +58,7 @@ export class RepositoryUtil<T extends Model> {
                 returning: true,
               });
             if (updatedRecord[0] === 0) {
+                LoggerUtil.logError(`Record with id ${whereCondition.id} not found.`, 'utils/repository.util.ts', 'updateRecord');
                 throw new Error(`Record with id ${whereCondition.id} not found.`);
 
             }
@@ -64,7 +66,7 @@ export class RepositoryUtil<T extends Model> {
            
             return result;
           } catch (error: any) {
-            console.error(`Error to update record: ${error.message}`);
+            LoggerUtil.logError(`Error to update record: ${error.message}`, 'utils/repository.util.ts', 'updateRecord');
             throw new Error(`Error to update record: ${error.message}`);
         }
     }
@@ -75,7 +77,7 @@ export class RepositoryUtil<T extends Model> {
             const createdRecord = await connection.models[this.model.name].create(record);
             return createdRecord;
           } catch (error: any) {
-            console.error(`Error to create record: ${error.message}`);
+            LoggerUtil.logError(`Error to create record: ${error.message}`, 'utils/repository.util.ts', 'createRecord');
             throw new Error(`Error to create record: ${error.message}`);
         }
     }
@@ -87,11 +89,12 @@ export class RepositoryUtil<T extends Model> {
                 where: { id },
               });
             if (deletedRecord === 0) {
+                LoggerUtil.logError(`Record with id ${id} not found.`, 'utils/repository.util.ts', 'deleteRecord');
                 throw new Error(`Record with id ${id} not found.`);
             }
             return { message: `Record with id ${id} deleted.` };
           } catch (error: any) {
-            console.error(`Error to delete record: ${error.message}`);
+            LoggerUtil.logError(`Error to delete record: ${error.message}`, 'utils/repository.util.ts', 'deleteRecord');
             throw new Error(`Error to delete record: ${error.message}`);
         }
     }

@@ -16,6 +16,8 @@ let userCredentials = {
   password: process.env.USER_TEST_PASSWORD
 } as any;
 
+let token = '';
+
 describe('User', () => {
 
   beforeEach(() => {
@@ -45,9 +47,10 @@ describe('User', () => {
 
   it('Login user', async () => {
     const user = await loginUser(request);
-
+    token = user.body.token;
     expect(user.body).not.toBeNull();
     expect(user.body.token).not.toBeNull();
+    expect(user.body.token).not.toBeUndefined();
   }, 10000);
 
   it('Login user with invalid username', async () => {
@@ -76,7 +79,8 @@ describe('User', () => {
         "username": userCredentials.username,
         "new_password": newPassword
       })
-      .set('Content-Type', 'application/json'); 
+      .set('Content-Type', 'application/json') // Set the content-type header
+      .set('Authorization', `Bearer ${token}`); // Set the content-type header
 
     let comparePassword = await PasswordUtil.comparePassword(newPassword, response.body[0].password);  
 

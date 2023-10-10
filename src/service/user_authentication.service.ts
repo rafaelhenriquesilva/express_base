@@ -4,7 +4,7 @@ import { UserAuthenticationHelper } from "../helpers/user_authentication.helper"
 import { JwtUtil } from "../utils/jwt.util";
 import { GlobalRepository } from "../repositories/global.repository";
 import { PasswordUtil } from "../utils/password.util";
-
+import { ResponseUtil } from "../utils/response.util";
 
 export class UserAuthenticationService {
     globalRepository = new GlobalRepository(UserAuthentication);
@@ -15,36 +15,26 @@ export class UserAuthenticationService {
             const body = request.body;
             let errors: Array<string> = [];
 
-            let user = await this.globalRepository.getDataByParameters({ username: body.username }) as UserAuthentication[];
+            let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
 
-            if (user.length > 0) {
-                errors.push('User already exists');
-            }
+            UserAuthenticationHelper.verifyUserExists(user, errors);
 
-            let encryptPassword = await PasswordUtil.creatHashPassword(body.password);
+            let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
 
-            let data = {
-                username: body.username,
-                password: encryptPassword,
-                created_at: new Date(),
-                updated_at: new Date(),
-                is_active: true
-            } as UserAuthentication;
+            let data = UserAuthenticationHelper.createUserData(body, encryptPassword) as UserAuthentication;
+            
+            let newUser = await this.globalRepository.createData(data) as UserAuthentication;
 
+            let callback = async () => response.status(200).json(newUser);
 
-            let newUser = await this.globalRepository.createData(data);
-
-            if (errors.length > 0) {
-                return response.status(400).json({
-                    message: 'Error',
-                    errors: errors
-                });
-            } else {
-                response.status(200).json(newUser);
-            }
-
-
+            ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
+        
         } catch (error: any) {
+            console.error(`
+                Origin: user_authentication.service.createUser
+                Error: ${error.message}
+                Stack: ${error.stack}
+            `);
             response.status(500).json({ error: error.message });
         }
     }
@@ -54,76 +44,57 @@ export class UserAuthenticationService {
             const body = request.body;
             let errors: Array<string> = [];
 
-            let user = await this.globalRepository.getDataByParameters({ username: body.username }) as UserAuthentication[];
+            let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
 
-            if (user.length === 0) {
-                errors.push('User not found');
-            }
+            UserAuthenticationHelper.verifyUserNotExists(user, errors);
 
-            if (user.length > 0 && !user[0].is_active) {
-                errors.push('User not active');
-            } else if (user.length > 0 && user[0].is_active) {
-                //Compare password
-                let comparePassword = await PasswordUtil.comparePassword(body.password, user[0].password);
+            UserAuthenticationHelper.verifyUserIsActive(user, errors);
 
-                if (!comparePassword) {
-                    errors.push('Password not match');
-                }
-            }
+            await UserAuthenticationHelper.verifyPasswordIsMatch(user, body, errors);
 
-            if (errors.length > 0) {
-                return response.status(400).json({
-                    message: 'Error',
-                    errors: errors
-                });
-            } else {
-                let token = await JwtUtil.generateJwtToken(user[0].id);
+            let callback = async () => {
+                let token = await JwtUtil.generateJwtToken(user[0].id) as string;
 
                 let dataToUpdate = {
                     token: token
                 } as UserAuthentication;
 
-
                 //Update token user
-                let updateUser = await this.globalRepository.updateData(dataToUpdate, { id: user[0].id }) as any;
+                await UserAuthenticationHelper.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate) as UserAuthentication;
 
-                response.status(200).json(updateUser);
-            }
+                response.status(200).json({
+                    message: 'Login realizado com sucesso!',
+                    token: token
+                });
+            };
+
+            ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
         } catch (error: any) {
+            console.error(`
+                Origin: user_authentication.service.login
+                Error: ${error.message}
+                Stack: ${error.stack}
+            `);
             response.status(500).json({ error: error.message });
         }
 
     }
 
     async updatePassword(request: Request, response: Response) {
-        const {username, new_password} = request.body;
+       try {
+        const { username, new_password } = request.body;
         let errors: Array<string> = [];
 
-        let user = await this.globalRepository.getDataByParameters({ username: username }) as UserAuthentication[];
+        let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: username }) as UserAuthentication[];
 
-        if (user.length === 0) {
-            errors.push('User not found');
-        }
+        UserAuthenticationHelper.verifyUserNotExists(user, errors);
 
-        if (user.length > 0 && !user[0].is_active) {
-            errors.push('User not active');
-        } 
-        
-        if (errors.length > 0) {
-            return response.status(400).json({
-                message: 'Error',
-                errors: errors
-            });
-        } else {
-            
-            if(new_password.length < 8) {
-                return response.status(400).json({
-                    message: 'Error',
-                    errors: ['Password must be at least 8 characters long']
-                });
-            }
+        UserAuthenticationHelper.verifyUserIsActive(user, errors);
 
-            let encryptPassword = await PasswordUtil.creatHashPassword(new_password);
+        UserAuthenticationHelper.verifyPasswordHaveMinimumLength(new_password, errors);
+
+        let callback = async () => {
+            let encryptPassword = await PasswordUtil.creatHashPassword(new_password) as string;
 
             let dataToUpdate = {
                 password: encryptPassword
@@ -133,9 +104,19 @@ export class UserAuthenticationService {
                 id: user[0].id
             } as any;
 
-            let updatedUser = await this.globalRepository.updateData(dataToUpdate, whereCondition) as any;
+            let updatedUser = await UserAuthenticationHelper.updateData(UserAuthentication, whereCondition, dataToUpdate) as UserAuthentication;
 
             response.status(200).json(updatedUser);
         }
+
+        ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
+       } catch(error: any) {
+        console.error(`
+            Origin: user_authentication.service.updatePassword
+            Error: ${error.message}
+            Stack: ${error.stack}
+        `);
+        response.status(500).json({ error: error.message });
+       }
     }
 }

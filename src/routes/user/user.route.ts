@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { UserAuthenticationService } from '../../service/user_authentication.service';
 import { ValidatorUtil } from '../../utils/validator.util';
+import { verifyTokenMiddleware } from '../../middlewares/auth.middleware';
 
 
 const userRoute = Router();
@@ -9,7 +10,7 @@ export class UserRoute {
   
   public async init() {
     userRoute.post('/create', ValidatorUtil.validatorFieldsNotEmpty(['username', 'password'], 'body') ,this.createUser);
-    userRoute.put('/update/password', ValidatorUtil.validatorFieldsNotEmpty(['username', 'new_password'], 'body') ,this.updatePassword);
+    userRoute.put('/update/password', verifyTokenMiddleware ,ValidatorUtil.validatorFieldsNotEmpty(['username', 'new_password'], 'body') ,this.updatePassword);
   }
 
   public async createUser(request: Request, response: Response) {

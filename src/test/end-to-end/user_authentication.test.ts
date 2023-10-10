@@ -4,7 +4,6 @@ import { loginUser, loginWithInvalidUsername, loginWithInvalidPassword } from '.
 import { GlobalRepository } from '../../repositories/global.repository';
 import UserAuthentication from '../../entities/UserAuthentication';
 import { PasswordUtil } from '../../utils/password.util';
-import e from 'express';
 
 const appInstance = new App();
 const app = appInstance.exportApp();

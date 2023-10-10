@@ -33,7 +33,7 @@ O projeto é configurado para permitir diferentes ambientes, onde o ambiente de 
 
 ## Documentação da API
 
-Este projeto utiliza o Swagger para documentação da API. Você pode acessar a documentação da API em [URL_DO_SWAGGER](URL_DO_SWAGGER).
+Este projeto utiliza o Swagger para documentação da API. Você pode acessar a documentação da API em [URL_DO_SWAGGER](https://userauth23-fbe378948f7c.herokuapp.com/api-docs/).
 
 ## Como Executar
 

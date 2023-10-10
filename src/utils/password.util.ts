@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcryptjs';
-
+import { LoggerUtil } from './logger.util';
 export class PasswordUtil {
   private static readonly saltRounds = 10;
 
@@ -9,7 +9,7 @@ export class PasswordUtil {
       const hash = await bcrypt.hash(password, salt);
       return hash;
     } catch (error) {
-      console.error('Error in creatHashPassword');
+      LoggerUtil.logError(`Error in creatHashPassword: ${JSON.stringify(error)}`, 'utils/password.util.ts', 'creatHashPassword');
       throw new Error('Erro ao criar o hash da senha');
     }
   }
@@ -19,7 +19,7 @@ export class PasswordUtil {
       const isMatch = await bcrypt.compare(password, hash);
       return isMatch;
     } catch (error) {
-      console.error('Error in comparePassword');
+      LoggerUtil.logError(`Error in comparePassword: ${JSON.stringify(error)}`, 'utils/password.util.ts', 'comparePassword');
       throw new Error('Erro ao comparar a senha com o hash');
     }
   }

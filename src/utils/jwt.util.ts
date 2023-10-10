@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { LoggerUtil } from './logger.util';
 
 const TWO_HOUR_IN_MILLISECONDS = 7200000; // 2 hours
 const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT || 'JWT_TEST_TOKEN';
@@ -15,7 +16,7 @@ export class JwtUtil {
         });
         resolve(token);
       } catch (error) {
-        console.error('Error in generateJwtToken');
+        LoggerUtil.logError(`Error in generateJwtToken: ${JSON.stringify(error)}`, 'utils/jwt.util.ts', 'generateJwtToken');
         reject(error);
       }
     });
@@ -25,7 +26,7 @@ export class JwtUtil {
     return new Promise((resolve, reject) => {
       jwt.verify(token, SECRET_KEY_JWT, (err) => {
         if (err) {
-          console.error('Error in verifyJwtToken');
+          LoggerUtil.logError(`Error in verifyJwtToken: ${JSON.stringify(err)}`, 'utils/jwt.util.ts', 'verifyJwtToken');
           
           reject({
             status: 401,

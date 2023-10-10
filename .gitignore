@@ -144,4 +144,8 @@ dist
 # Package Lock
 package-lock.json
 
+# Testing
+coverage
+src/tests/*
+
 # End of https://www.toptal.com/developers/gitignore/api/node

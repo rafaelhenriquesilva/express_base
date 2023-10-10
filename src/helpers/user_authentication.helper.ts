@@ -1,17 +1,21 @@
 import UserAuthentication from "../entities/UserAuthentication";
 import { GlobalRepository } from "../repositories/global.repository";
+import { LoggerUtil } from "../utils/logger.util";
 import { PasswordUtil } from "../utils/password.util";
 
 export class UserAuthenticationHelper {
+    
 
     static verifyUserNotExists(user: UserAuthentication[], errors: Array<string>) {
         if(user.length == 0){
+            LoggerUtil.logError(`User not found: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserNotExists');
             errors.push('User not found');
         } 
     }
 
     static async verifyUserExists(user: UserAuthentication[], errors: Array<string>) {
         if(user.length > 0){
+            LoggerUtil.logError(`User already exists: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserExists');
             errors.push('User already exists');
         }
     }
@@ -22,6 +26,7 @@ export class UserAuthenticationHelper {
             let comparePassword = await PasswordUtil.comparePassword(body.password, user[0].password);
 
             if (!comparePassword) {
+                LoggerUtil.logError(`Password not match: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyPasswordIsMatch');
                 errors.push('Password not match');
             }
         }
@@ -37,6 +42,7 @@ export class UserAuthenticationHelper {
 
     static async verifyUserIsActive(user: UserAuthentication[], errors: Array<string>) {
         if(user.length > 0 && !user[0].is_active){
+            LoggerUtil.logError(`User not active: ${JSON.stringify(user)}` , 'helpers/user_authentication.helper.ts', 'verifyUserIsActive');
             errors.push('User not active');
         }
     }
@@ -49,6 +55,7 @@ export class UserAuthenticationHelper {
 
     static async verifyPasswordHaveMinimumLength(password: string, errors: Array<string>) {
         if (password.length < 8) {
+            LoggerUtil.logError(`Password must have minimum length of 8 characters: ${JSON.stringify(password)}` , 'helpers/user_authentication.helper.ts', 'verifyPasswordHaveMinimumLength');
             errors.push('Password must have minimum length of 8 characters');
         }
     }

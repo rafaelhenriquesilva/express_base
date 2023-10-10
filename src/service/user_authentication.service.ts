@@ -5,14 +5,18 @@ import { JwtUtil } from "../utils/jwt.util";
 import { GlobalRepository } from "../repositories/global.repository";
 import { PasswordUtil } from "../utils/password.util";
 import { ResponseUtil } from "../utils/response.util";
+import { LoggerUtil } from "../utils/logger.util";
 
 export class UserAuthenticationService {
     globalRepository = new GlobalRepository(UserAuthentication);
-    constructor() { }
+    constructor() { 
+        LoggerUtil.logInfo('Starting UserAuthenticationService', 'service/user_authentication.service.ts');
+    }
 
     async createUser(request: Request, response: Response) {
         try {
             const body = request.body;
+            LoggerUtil.logInfo(`Starting createUser: ${JSON.stringify(body)}`, 'service/user_authentication.service.ts');
             let errors: Array<string> = [];
 
             let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
@@ -26,15 +30,11 @@ export class UserAuthenticationService {
             let newUser = await this.globalRepository.createData(data) as UserAuthentication;
 
             let callback = async () => response.status(200).json(newUser);
-
+            LoggerUtil.logInfo(`Finishing createUser: ${JSON.stringify(newUser)}`, 'service/user_authentication.service.ts');
             ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
         
         } catch (error: any) {
-            console.error(`
-                Origin: user_authentication.service.createUser
-                Error: ${error.message}
-                Stack: ${error.stack}
-            `);
+            LoggerUtil.logError(`Error: ${error.message}`, 'service/user_authentication.service.ts', 'createUser');
             response.status(500).json({ error: error.message });
         }
     }
@@ -42,6 +42,7 @@ export class UserAuthenticationService {
     async login(request: Request, response: Response) {
         try {
             const body = request.body;
+            LoggerUtil.logInfo(`Starting login: ${JSON.stringify(body)}`, 'service/user_authentication.service.ts');
             let errors: Array<string> = [];
 
             let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
@@ -61,7 +62,7 @@ export class UserAuthenticationService {
 
                 //Update token user
                 await UserAuthenticationHelper.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate) as UserAuthentication;
-
+                LoggerUtil.logInfo(`Finishing login: ${JSON.stringify(user)}`, 'service/user_authentication.service.ts');
                 response.status(200).json({
                     message: 'Login realizado com sucesso!',
                     token: token
@@ -70,11 +71,7 @@ export class UserAuthenticationService {
 
             ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
         } catch (error: any) {
-            console.error(`
-                Origin: user_authentication.service.login
-                Error: ${error.message}
-                Stack: ${error.stack}
-            `);
+            LoggerUtil.logError(`Error: ${error.message}`, 'service/user_authentication.service.ts', 'login');
             response.status(500).json({ error: error.message });
         }
 
@@ -83,6 +80,7 @@ export class UserAuthenticationService {
     async updatePassword(request: Request, response: Response) {
        try {
         const { username, new_password } = request.body;
+        LoggerUtil.logInfo(`Starting updatePassword: ${JSON.stringify(request.body)}`, 'service/user_authentication.service.ts');
         let errors: Array<string> = [];
 
         let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: username }) as UserAuthentication[];
@@ -105,17 +103,15 @@ export class UserAuthenticationService {
             } as any;
 
             let updatedUser = await UserAuthenticationHelper.updateData(UserAuthentication, whereCondition, dataToUpdate) as UserAuthentication;
-
+            LoggerUtil.logInfo(`Finishing updatePassword: ${JSON.stringify(updatedUser)}`, 'service/user_authentication.service.ts');
             response.status(200).json(updatedUser);
         }
 
+        
+
         ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
        } catch(error: any) {
-        console.error(`
-            Origin: user_authentication.service.updatePassword
-            Error: ${error.message}
-            Stack: ${error.stack}
-        `);
+        LoggerUtil.logError(`Error: ${error.message}`, 'service/user_authentication.service.ts', 'updatePassword');
         response.status(500).json({ error: error.message });
        }
     }

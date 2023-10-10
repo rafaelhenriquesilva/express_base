@@ -1,5 +1,6 @@
 import { Sequelize, Options } from 'sequelize';
 import * as dotenv from 'dotenv';
+import { LoggerUtil } from '../utils/logger.util';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.env': '.env.test'
@@ -15,7 +16,7 @@ interface DatabaseConfig extends Options {
 
 let databaseConfig: DatabaseConfig = new Object() as DatabaseConfig;
 
-console.log('enviroment: ', process.env.NODE_ENV);
+LoggerUtil.logInfo(`Iniciando o banco de dados no ambiente: ${process.env.NODE_ENV}`, 'config/sequelize.ts');
 
 let dialect = process.env.DB_DIALECT as 'mysql' | 'sqlite' | 'postgres' | 'mssql' || 'sqlite';
 
@@ -54,9 +55,11 @@ const sequelize = new Sequelize(databaseConfig as DatabaseConfig);
 // Teste a conexão
 async function testConnection() {
   try {
+    
     await sequelize.authenticate();
+    LoggerUtil.logInfo('Conexão com o banco de dados estabelecida com sucesso.', 'config/sequelize.ts');
   } catch (error) {
-    console.error('Erro ao conectar ao banco de dados:', error);
+    LoggerUtil.logError('Não foi possível conectar ao banco de dados.', 'config/sequelize.ts', 'testConnection');
   }
 }
 

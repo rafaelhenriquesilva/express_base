@@ -69,6 +69,11 @@
       "user/update/password": {
         "put": {
             "summary": "Atualizar senha do usuário",
+            "security": [
+                {
+                    "BearerAuth": []
+                }
+            ],
             "requestBody": {
                 "content": {
                     "application/json": {

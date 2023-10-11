@@ -4,6 +4,7 @@ import { GlobalRepository } from "../../repositories/global.repository";
 import { parse } from "dotenv";
 
 let globalRepositoryWithTestAccountModel = new GlobalRepository(TestAccount);
+let timeout = (process.env.TEST_TIMEOUT || 10000) as number;
 describe('GlobalRepository methods', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -23,7 +24,7 @@ describe('GlobalRepository methods', () => {
 
         
         expect(results).not.toBeNull(); 
-    }, 10000);
+    }, timeout);
 
     it('call database and create data', async () => {
         let results = await globalRepositoryWithTestAccountModel.createData(data);
@@ -40,7 +41,7 @@ describe('GlobalRepository methods', () => {
 
         expect(results).not.toBeNull();
         expect(results[0].id).toBe(test_account['id']);
-    }, 10000);
+    }, timeout);
 
     it('call database and update data', async () => {
         let data = {
@@ -55,12 +56,12 @@ describe('GlobalRepository methods', () => {
         
         expect(dataToUpdate).not.toBeNull();
         expect(dataToUpdate[0].age).toBe(12);
-    }, 10000);
+    }, timeout);
 
     it('call database and delete data', async () => {
         let results = await globalRepositoryWithTestAccountModel.deleteData(test_account['id']);
 
         expect(results).not.toBeNull();
-    }, 10000);
+    }, timeout);
 
 });

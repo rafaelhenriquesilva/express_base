@@ -53,13 +53,6 @@ export class UserAuthenticationHelper {
         return dataUpdated;
     }
 
-    static async verifyPasswordHaveMinimumLength(password: string, errors: Array<string>) {
-        if (password.length < 8) {
-            LoggerUtil.logError(`Password must have minimum length of 8 characters: ${JSON.stringify(password)}` , 'helpers/user_authentication.helper.ts', 'verifyPasswordHaveMinimumLength');
-            errors.push('Password must have minimum length of 8 characters');
-        }
-    }
-
     static createUserData(body: any, encryptPassword: string){
         let data = {
             username: body.username,

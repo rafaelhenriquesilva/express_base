@@ -77,7 +77,7 @@
             "requestBody": {
                 "content": {
                     "application/json": {
-                        "schema": {"$ref": "#/components/schemas/User_Required"}
+                        "schema": {"$ref": "#/components/schemas/User_Required_New_Password"}
                     }
                 }
             },
@@ -103,6 +103,14 @@
             "properties": {
                "username": {"type": "string", "description": "Nome do usuário"},
                "password": {"type": "string", "description": "Senha do usuário"}
+            },
+            "required": ["username", "password"]
+          },
+          "User_Required_New_Password":{
+            "type": "object",
+            "properties": {
+               "username": {"type": "string", "description": "Nome do usuário"},
+               "new_password": {"type": "string", "description": "Nova senha do usuário"}
             },
             "required": ["username", "password"]
           },

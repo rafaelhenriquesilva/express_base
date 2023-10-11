@@ -12,7 +12,7 @@
           "description": "Servidor Local"
       },
       {
-        "url": "https://api.example.com/",
+        "url": "https://userauth23-fbe378948f7c.herokuapp.com",
         "description": "Production server"
       }
   ],
@@ -42,7 +42,7 @@
         
           }
       },
-      "user/create": {
+      "/user/create": {
         "post": {
             "summary": "Criar um novo usuário",
             "requestBody": {
@@ -66,7 +66,7 @@
             }
         }
       },
-      "user/update/password": {
+      "/user/update/password": {
         "put": {
             "summary": "Atualizar senha do usuário",
             "security": [

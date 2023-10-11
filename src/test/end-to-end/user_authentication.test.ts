@@ -1,15 +1,16 @@
 import supertest from 'supertest';
 import { App } from '../../app';
-import { loginUser, loginWithInvalidUsername, loginWithInvalidPassword } from './helpers/login.helper';
+import { loginUser } from './helpers/login.helper';
 import { GlobalRepository } from '../../repositories/global.repository';
 import UserAuthentication from '../../entities/UserAuthentication';
 import { PasswordUtil } from '../../utils/password.util';
-
 const appInstance = new App();
 const app = appInstance.exportApp();
 
 const request = supertest(app);
 const globalRepository = new GlobalRepository(UserAuthentication);
+
+let timeout = (process.env.TEST_TIMEOUT || 10000) as number;
 
 let userCredentials = {
   username: process.env.USER_TEST_USERNAME,
@@ -18,7 +19,7 @@ let userCredentials = {
 
 let token = '';
 
-describe('User', () => {
+describe('User And Login Routes', () => {
 
   beforeEach(() => {
      jest.clearAllMocks();
@@ -43,33 +44,43 @@ describe('User', () => {
       expect(user.body).not.toBeNull();
       expect(user.body.username).toBe(userCredentials.username);
       expect(user.body.password).not.toBe(userCredentials.password);
-  }, 10000);
+  }, timeout);
 
   it('Login user', async () => {
-    const user = await loginUser(request);
+    const user = await loginUser(request, userCredentials.username, userCredentials.password);
     token = user.body.token;
     expect(user.body).not.toBeNull();
     expect(user.body.token).not.toBeNull();
     expect(user.body.token).not.toBeUndefined();
-  }, 10000);
+  }, timeout);
 
   it('Login user with invalid username', async () => {
-    const invalidUser = await loginWithInvalidUsername(request);
+    const invalidUser = await loginUser(request, 'invalid_username', userCredentials.password);
 
     expect(invalidUser.body).not.toBeNull();
     expect(invalidUser.body.errors).not.toBeNull();
     expect(invalidUser.body.errors[0]).toBe('User not found');
 
-  }, 10000);
+  }, timeout);
 
   it('Login user with invalid password', async () => {
-    const invalidUser = await loginWithInvalidPassword(request);
+    const invalidUser = await loginUser(request, userCredentials.username ,'invalid_password');
 
     expect(invalidUser.body).not.toBeNull();
     expect(invalidUser.body.errors).not.toBeNull();
     expect(invalidUser.body.errors[0]).toBe('Password not match');
 
-  })
+  }, timeout);
+  
+  it('Login user: username and password with four characters', async () => {
+    const invalidUser = await loginUser(request, 'user' ,'pass');
+
+    expect(invalidUser.body).not.toBeNull();
+    expect(invalidUser.body.errors).not.toBeNull();
+    expect(invalidUser.body.errors[0].msg).toBe('Username must have minimum length of 8 characters');
+    expect(invalidUser.body.errors[1].msg).toBe('Password must have minimum length of 8 characters');
+
+  } , timeout);
 
   it('update user password', async () => {
     let newPassword = 'new_password';

@@ -23,7 +23,7 @@ export class UserAuthenticationService {
 
             UserAuthenticationHelper.verifyUserExists(user, errors);
             
-            UserAuthenticationHelper.verifyPasswordHaveMinimumLength(body.password, errors);
+           
             let callback = async () => {
                 let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
 
@@ -91,8 +91,6 @@ export class UserAuthenticationService {
         UserAuthenticationHelper.verifyUserNotExists(user, errors);
 
         UserAuthenticationHelper.verifyUserIsActive(user, errors);
-
-        UserAuthenticationHelper.verifyPasswordHaveMinimumLength(new_password, errors);
 
         let callback = async () => {
             let encryptPassword = await PasswordUtil.creatHashPassword(new_password) as string;

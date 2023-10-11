@@ -1,6 +1,5 @@
 import supertest from 'supertest';
 import { App } from '../../app';
-import { loginUser, loginWithInvalidUsername, loginWithInvalidPassword } from './helpers/login.helper';
 
 const appInstance = new App();
 const app = appInstance.exportApp();

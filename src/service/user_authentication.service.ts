@@ -22,15 +22,18 @@ export class UserAuthenticationService {
             let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
 
             UserAuthenticationHelper.verifyUserExists(user, errors);
-
-            let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
-
-            let data = UserAuthenticationHelper.createUserData(body, encryptPassword) as UserAuthentication;
             
-            let newUser = await this.globalRepository.createData(data) as UserAuthentication;
+            UserAuthenticationHelper.verifyPasswordHaveMinimumLength(body.password, errors);
+            let callback = async () => {
+                let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
 
-            let callback = async () => response.status(200).json(newUser);
-            LoggerUtil.logInfo(`Finishing createUser: ${JSON.stringify(newUser)}`, 'service/user_authentication.service.ts');
+                let data = UserAuthenticationHelper.createUserData(body, encryptPassword) as UserAuthentication;
+                
+                let newUser = await this.globalRepository.createData(data) as UserAuthentication;
+                LoggerUtil.logInfo(`Finishing createUser: ${JSON.stringify(newUser)}`, 'service/user_authentication.service.ts');
+                response.status(200).json(newUser);
+            }
+            
             ResponseUtil.showErrorsOrExecuteFunction(errors, response, callback);
         
         } catch (error: any) {

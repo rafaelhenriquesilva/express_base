@@ -77,7 +77,7 @@
             "requestBody": {
                 "content": {
                     "application/json": {
-                        "schema": {"$ref": "#/components/schemas/User_Required"}
+                        "schema": {"$ref": "#/components/schemas/User_Required_New_Password"}
                     }
                 }
             },

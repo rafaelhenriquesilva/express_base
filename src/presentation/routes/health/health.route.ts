@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { LoggerUtil } from '../../utils/logger.util';
+import { LoggerUtil } from '../../../domain/utils/logger.util';
 
 const healthRoute = Router();
 

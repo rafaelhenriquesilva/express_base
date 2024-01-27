@@ -1,4 +1,4 @@
-import { JwtUtil } from "../../utils/jwt.util";
+import { JwtUtil } from "../../domain/utils/jwt.util";
 
 let token = '';
 describe('JWTUtil', () => {

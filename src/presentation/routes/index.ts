@@ -1,11 +1,11 @@
 import express from 'express';
 import { HealthRoute } from './health/health.route';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from '../swagger.json';
+import swaggerDocument from '../../swagger.json';
 import { LoginRoute } from './login/login.route';
 import { RouterConfigDto } from '../dtos/router_config.dto';
 import { UserRoute } from './user/user.route';
-import { LoggerUtil } from '../utils/logger.util';
+import { LoggerUtil } from '../../domain/utils/logger.util';
 
 LoggerUtil.logInfo('Iniciando as rotas', 'routes/index.ts');
 

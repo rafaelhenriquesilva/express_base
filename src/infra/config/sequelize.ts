@@ -1,6 +1,6 @@
 import { Sequelize, Options } from 'sequelize';
 import * as dotenv from 'dotenv';
-import { LoggerUtil } from '../utils/logger.util';
+import { LoggerUtil } from '../../domain/utils/logger.util';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.env': '.env.test'

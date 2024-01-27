@@ -1,5 +1,5 @@
 import UserAuthentication from "../entities/UserAuthentication";
-import { GlobalRepository } from "../repositories/global.repository";
+import { GlobalRepository } from "../../infra/repositories/typeOrm/global.repository";
 import { LoggerUtil } from "../utils/logger.util";
 import { PasswordUtil } from "../utils/password.util";
 

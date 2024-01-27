@@ -1,6 +1,6 @@
 import { QueryTypes } from "sequelize";
-import TestAccount from "../../entities/TestAccount";
-import { GlobalRepository } from "../../repositories/global.repository";
+import TestAccount from "../../domain/entities/TestAccount";
+import { GlobalRepository } from "../../infra/repositories/typeOrm/global.repository";
 import { parse } from "dotenv";
 
 let globalRepositoryWithTestAccountModel = new GlobalRepository(TestAccount);

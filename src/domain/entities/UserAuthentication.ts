@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../config/sequelize'; // Importe a instância do Sequelize
+import sequelize from '../../infra/config/sequelize'; // Importe a instância do Sequelize
 
 class UserAuthentication extends Model {
   public id!: number;

@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 
 import dotenv from 'dotenv';
-import { routes } from './routes';
+import { routes } from './presentation/routes';
 
 export class App {
     

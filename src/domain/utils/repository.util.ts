@@ -1,7 +1,7 @@
 
 
 import { Model, Sequelize, QueryTypes } from 'sequelize';
-import sequelize from '../config/sequelize';
+import sequelize from '../../infra/config/sequelize';
 import { LoggerUtil } from './logger.util';
 
 

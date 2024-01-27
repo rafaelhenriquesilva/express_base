@@ -1,4 +1,4 @@
-import { PasswordUtil } from "../../utils/password.util";
+import { PasswordUtil } from "../../domain/utils/password.util";
 
 let password = '123456';
 describe('PasswordUtil', () => {

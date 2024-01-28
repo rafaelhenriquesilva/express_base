@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtUtil } from '../../utils/jwt.util';
+import { TokenUtil } from '../../utils/token.util';
 import { ICustomRequest } from '../../infra/interfaces/ICustomRequest';
 import { LoggerUtil } from '../../utils/logger.util';
 
@@ -16,8 +16,8 @@ export const verifyTokenMiddleware = async (req: ICustomRequest, res: Response, 
   try {
     let errors: any[] = [];
     token = token.replace('Bearer ', '').trim();
-    await JwtUtil.verifyJwtToken(token as string);
-    req.userId = JwtUtil.getIdFromToken(token as string); 
+    await TokenUtil.verifyToken(token as string);
+    req.userId = TokenUtil.getIdFromToken(token as string); 
     if(errors.length > 0) {
       LoggerUtil.logError('Middleware auth error', 'middlewares/auth.middleware.ts', 'verifyTokenMiddleware');
       return res.status(401).json({ 

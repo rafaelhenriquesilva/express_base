@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserAuthentication from "../../infra/data-access/entities/UserAuthentication";
 import { UserAuthenticationUtil } from "../../utils/user_authentication.util";
-import { JwtUtil } from "../../utils/jwt.util";
+import { TokenUtil } from "../../utils/token.util";
 import { GlobalRepository } from "../../infra/data-access/repositories/typeOrm/global.repository";
 import { PasswordUtil } from "../../utils/password.util";
 import { ResponseUtil } from "../../utils/response.util";
@@ -57,7 +57,7 @@ export class UserAuthenticationService {
             await UserAuthenticationUtil.verifyPasswordIsMatch(user, body, errors);
 
             let callback = async () => {
-                let token = await JwtUtil.generateJwtToken(user[0].id) as string;
+                let token = await TokenUtil.generateToken(user[0].id) as string;
 
                 let dataToUpdate = {
                     token: token

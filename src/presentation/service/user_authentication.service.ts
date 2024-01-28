@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import UserAuthentication from "../../infra/data-access/entities/UserAuthentication";
-import { UserAuthenticationHelper } from "../../domain/helpers/user_authentication.helper";
-import { JwtUtil } from "../../domain/utils/jwt.util";
+import { UserAuthenticationUtil } from "../../utils/user_authentication.util";
+import { JwtUtil } from "../../utils/jwt.util";
 import { GlobalRepository } from "../../infra/data-access/repositories/typeOrm/global.repository";
-import { PasswordUtil } from "../../domain/utils/password.util";
-import { ResponseUtil } from "../../domain/utils/response.util";
-import { LoggerUtil } from "../../domain/utils/logger.util";
+import { PasswordUtil } from "../../utils/password.util";
+import { ResponseUtil } from "../../utils/response.util";
+import { LoggerUtil } from "../../utils/logger.util";
 
 export class UserAuthenticationService {
     globalRepository = new GlobalRepository(UserAuthentication);
@@ -19,15 +19,15 @@ export class UserAuthenticationService {
             LoggerUtil.logInfo(`Starting createUser: ${JSON.stringify(body)}`, 'service/user_authentication.service.ts');
             let errors: Array<string> = [];
 
-            let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
+            let user = await UserAuthenticationUtil.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
 
-            UserAuthenticationHelper.verifyUserExists(user, errors);
+            UserAuthenticationUtil.verifyUserExists(user, errors);
             
            
             let callback = async () => {
                 let encryptPassword = await PasswordUtil.creatHashPassword(body.password) as string;
 
-                let data = UserAuthenticationHelper.createUserData(body, encryptPassword) as UserAuthentication;
+                let data = UserAuthenticationUtil.createUserData(body, encryptPassword) as UserAuthentication;
                 
                 let newUser = await this.globalRepository.createData(data) as UserAuthentication;
                 LoggerUtil.logInfo(`Finishing createUser: ${JSON.stringify(newUser)}`, 'service/user_authentication.service.ts');
@@ -48,13 +48,13 @@ export class UserAuthenticationService {
             LoggerUtil.logInfo(`Starting login: ${JSON.stringify(body)}`, 'service/user_authentication.service.ts');
             let errors: Array<string> = [];
 
-            let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
+            let user = await UserAuthenticationUtil.getDataWhereCondition(UserAuthentication, { username: body.username }) as UserAuthentication[];
 
-            UserAuthenticationHelper.verifyUserNotExists(user, errors);
+            UserAuthenticationUtil.verifyUserNotExists(user, errors);
 
-            UserAuthenticationHelper.verifyUserIsActive(user, errors);
+            UserAuthenticationUtil.verifyUserIsActive(user, errors);
 
-            await UserAuthenticationHelper.verifyPasswordIsMatch(user, body, errors);
+            await UserAuthenticationUtil.verifyPasswordIsMatch(user, body, errors);
 
             let callback = async () => {
                 let token = await JwtUtil.generateJwtToken(user[0].id) as string;
@@ -64,7 +64,7 @@ export class UserAuthenticationService {
                 } as UserAuthentication;
 
                 //Update token user
-                await UserAuthenticationHelper.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate) as UserAuthentication;
+                await UserAuthenticationUtil.updateData(UserAuthentication, { id: user[0].id }, dataToUpdate) as UserAuthentication;
                 LoggerUtil.logInfo(`Finishing login: ${JSON.stringify(user)}`, 'service/user_authentication.service.ts');
                 response.status(200).json({
                     message: 'Login realizado com sucesso!',
@@ -86,11 +86,11 @@ export class UserAuthenticationService {
         LoggerUtil.logInfo(`Starting updatePassword: ${JSON.stringify(request.body)}`, 'service/user_authentication.service.ts');
         let errors: Array<string> = [];
 
-        let user = await UserAuthenticationHelper.getDataWhereCondition(UserAuthentication, { username: username }) as UserAuthentication[];
+        let user = await UserAuthenticationUtil.getDataWhereCondition(UserAuthentication, { username: username }) as UserAuthentication[];
 
-        UserAuthenticationHelper.verifyUserNotExists(user, errors);
+        UserAuthenticationUtil.verifyUserNotExists(user, errors);
 
-        UserAuthenticationHelper.verifyUserIsActive(user, errors);
+        UserAuthenticationUtil.verifyUserIsActive(user, errors);
 
         let callback = async () => {
             let encryptPassword = await PasswordUtil.creatHashPassword(new_password) as string;
@@ -103,7 +103,7 @@ export class UserAuthenticationService {
                 id: user[0].id
             } as any;
 
-            let updatedUser = await UserAuthenticationHelper.updateData(UserAuthentication, whereCondition, dataToUpdate) as UserAuthentication;
+            let updatedUser = await UserAuthenticationUtil.updateData(UserAuthentication, whereCondition, dataToUpdate) as UserAuthentication;
             LoggerUtil.logInfo(`Finishing updatePassword: ${JSON.stringify(updatedUser)}`, 'service/user_authentication.service.ts');
             response.status(200).json(updatedUser);
         }

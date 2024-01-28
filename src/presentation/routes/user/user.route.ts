@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { UserAuthenticationService } from '../../service/user_authentication.service';
 import { verifyTokenMiddleware } from '../../middlewares/auth.middleware';
-import { LoggerUtil } from '../../../domain/utils/logger.util';
+import { LoggerUtil } from '../../../utils/logger.util';
 import { UserAuthenticationValidator } from '../../validators/user_authentication.validator';
 
 const userRoute = Router();

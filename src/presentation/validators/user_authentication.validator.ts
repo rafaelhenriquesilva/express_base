@@ -1,6 +1,6 @@
 import { ValidationChain, validationResult } from 'express-validator';
 import { body, query, param } from 'express-validator';
-import { ValidatorUtil } from '../../domain/utils/validator.util';
+import { ValidatorUtil } from '../../utils/validator.util';
 export class UserAuthenticationValidator {
 
     static createUserAndLoginValidator() {

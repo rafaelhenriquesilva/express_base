@@ -1,6 +1,6 @@
-import { ErrorUtil } from "../../../../domain/utils/error.util";
-import { LoggerUtil } from "../../../../domain/utils/logger.util";
-import { RepositoryUtil } from "../../../../domain/utils/repository.util";
+import { ErrorUtil } from "../../../../utils/error.util";
+import { LoggerUtil } from "../../../../utils/logger.util";
+import { RepositoryUtil } from "../../../../utils/repository.util";
 import { FindOptions, Model, QueryTypes,  } from "sequelize";
 
 export class GlobalRepository<T extends Model> {

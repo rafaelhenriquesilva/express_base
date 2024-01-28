@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtUtil } from '../../domain/utils/jwt.util';
-import { ICustomRequest } from '../../domain/interfaces/ICustomRequest';
-import { LoggerUtil } from '../../domain/utils/logger.util';
+import { JwtUtil } from '../../utils/jwt.util';
+import { ICustomRequest } from '../../infra/interfaces/ICustomRequest';
+import { LoggerUtil } from '../../utils/logger.util';
 
 
 export const verifyTokenMiddleware = async (req: ICustomRequest, res: Response, next: NextFunction) => {

@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import { App } from '../../app'
 import UserAuthentication from '../../infra/data-access/entities/UserAuthentication';
-import { PasswordUtil } from '../../domain/utils/password.util';
+import { PasswordUtil } from '../../utils/password.util';
 import { GlobalRepository } from '../../infra/data-access/repositories/typeOrm/global.repository';
 import { loginUser } from './helpers/login.helper';
 const appInstance = new App();

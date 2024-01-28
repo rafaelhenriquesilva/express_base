@@ -1,4 +1,4 @@
-import { ValidatorUtil } from "../../domain/utils/validator.util";
+import { ValidatorUtil } from "../../utils/validator.util";
 
 describe('ValidatorUtil tests', () => {
     beforeEach(() => {

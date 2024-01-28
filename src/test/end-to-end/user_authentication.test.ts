@@ -1,9 +1,9 @@
 import supertest from 'supertest';
-import { App } from '../../app';
-import { loginUser } from './helpers/login.helper';
-import { GlobalRepository } from '../../infra/repositories/typeOrm/global.repository';
-import UserAuthentication from '../../domain/entities/UserAuthentication';
+import { App } from '../../app'
+import UserAuthentication from '../../infra/data-access/entities/UserAuthentication';
 import { PasswordUtil } from '../../domain/utils/password.util';
+import { GlobalRepository } from '../../infra/data-access/repositories/typeOrm/global.repository';
+import { loginUser } from './helpers/login.helper';
 const appInstance = new App();
 const app = appInstance.exportApp();
 

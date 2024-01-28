@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import UserAuthentication from "../../domain/entities/UserAuthentication";
+import UserAuthentication from "../../infra/data-access/entities/UserAuthentication";
 import { UserAuthenticationHelper } from "../../domain/helpers/user_authentication.helper";
 import { JwtUtil } from "../../domain/utils/jwt.util";
-import { GlobalRepository } from "../../infra/repositories/typeOrm/global.repository";
+import { GlobalRepository } from "../../infra/data-access/repositories/typeOrm/global.repository";
 import { PasswordUtil } from "../../domain/utils/password.util";
 import { ResponseUtil } from "../../domain/utils/response.util";
 import { LoggerUtil } from "../../domain/utils/logger.util";

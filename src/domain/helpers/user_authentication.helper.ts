@@ -1,5 +1,6 @@
-import UserAuthentication from "../entities/UserAuthentication";
-import { GlobalRepository } from "../../infra/repositories/typeOrm/global.repository";
+// TODO -> USAR O MODELS DO DOMINIO
+import UserAuthentication from "../../infra/data-access/entities/UserAuthentication";
+import { GlobalRepository } from "../../infra/data-access/repositories/typeOrm/global.repository";
 import { LoggerUtil } from "../utils/logger.util";
 import { PasswordUtil } from "../utils/password.util";
 
